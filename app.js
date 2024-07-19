@@ -1,3 +1,18 @@
+// Firebase configuration
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "bajaore-e4987.firebaseapp.com",
+    databaseURL: "bajaore-e4987.firebaseio.com",
+    projectId: "bajaore-e4987",
+    storageBucket: "bajaore-e4987.appspot.com",
+    messagingSenderId: "436090087733",
+    appId: "YOUR_APP_ID"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
 const searchInput = document.getElementById('searchInput');
 const searchBtn = document.getElementById('searchBtn');
 const results = document.getElementById('results');
@@ -5,25 +20,27 @@ const player = document.getElementById('player');
 
 let peerConnection;
 const config = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
-const signalingServer = new WebSocket('wss://your-signaling-server-url');
+const signalingRef = database.ref('/signaling');
 
-signalingServer.onmessage = async (message) => {
-    const data = JSON.parse(message.data);
-    switch (data.type) {
-        case 'offer':
-            await handleOffer(data.offer);
-            break;
-        case 'answer':
-            await handleAnswer(data.answer);
-            break;
-        case 'candidate':
-            await handleCandidate(data.candidate);
-            break;
-        case 'play':
-            playVideo(data.videoId, data.timestamp);
-            break;
+signalingRef.on('child_added', async (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+        switch (data.type) {
+            case 'offer':
+                await handleOffer(data.offer);
+                break;
+            case 'answer':
+                await handleAnswer(data.answer);
+                break;
+            case 'candidate':
+                await handleCandidate(data.candidate);
+                break;
+            case 'play':
+                playVideo(data.videoId, data.timestamp);
+                break;
+        }
     }
-};
+});
 
 searchBtn.addEventListener('click', () => {
     const query = searchInput.value;
@@ -31,7 +48,7 @@ searchBtn.addEventListener('click', () => {
 });
 
 function searchYouTube(query) {
-    fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${query}&key=YOUR_API_KEY`)
+    fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${query}&key=AIzaSyAy_aJSnogvGN0WHF8YdD2fnm7_GoZiBfg`)
         .then(response => response.json())
         .then(data => {
             results.innerHTML = '';
@@ -51,7 +68,7 @@ function searchYouTube(query) {
 }
 
 function playVideo(videoId, timestamp) {
-    player.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&start=${(Date.now() - timestamp) / 1000}`;
+    player.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1&start=${Math.floor((Date.now() - timestamp) / 1000)}`;
     player.style.display = 'block';
     sendMessage({ type: 'play', videoId, timestamp });
 }
@@ -91,7 +108,8 @@ async function handleCandidate(candidate) {
 }
 
 function sendMessage(message) {
-    signalingServer.send(JSON.stringify(message));
+    const newMessageRef = signalingRef.push();
+    newMessageRef.set(message);
 }
 
 createPeerConnection();
