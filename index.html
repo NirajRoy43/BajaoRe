@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Sync</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        #controls {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <input type="text" id="searchInput" placeholder="Search for music">
+        <button id="searchBtn">Search</button>
+        <div id="results"></div>
+    </div>
+    <iframe id="player" width="0" height="0" style="display:none;" frameborder="0"></iframe>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="app.js"></script>
+</body>
+</html>
