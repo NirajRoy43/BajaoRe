@@ -1,13 +1,14 @@
 // Firebase configuration
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
+    apiKey: "AIzaSyCyT1ynXFTDZHGdwaADKFVyTGMAoeXJbHs",
     authDomain: "bajaore-e4987.firebaseapp.com",
-    databaseURL: "bajaore-e4987.firebaseio.com",
+    databaseURL: "https://bajaore-e4987-default-rtdb.firebaseio.com",
     projectId: "bajaore-e4987",
     storageBucket: "bajaore-e4987.appspot.com",
     messagingSenderId: "436090087733",
-    appId: "YOUR_APP_ID"
-};
+    appId: "1:436090087733:web:4c29a0c2dcd8dc946cc47c",
+    measurementId: "G-X1E2EF86BR"
+  };
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
